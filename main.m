@@ -1,11 +1,18 @@
-function main(N, D, Op, Ol, yc, xc, m, res, l, name, i, mask)
-   
-  disp("   > Génération de la pupille");
-  R = D;
+function main(N, D, Op, Ol, yc, xc, m, res, l, name, i, mask, ParentProgress)
+  
+  Progress = waitbar(0.0, 'Génération de la pupille');
+  pos_w1=get(ParentProgress,'position');
+  pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+  set(Progress,'position',pos_w2,'doublebuffer','on')
+  
+  Nb_Mirrors = 7;
+  Radius = 5;
   Gap = 1;
-  Grid = BuildGrid(R, sqrt(3.)*R/2., Gap, N);
-  BasisSegmentsCube = BuildApodizedSegment(Grid, R, sqrt(3.)*R/2., N); % segments
-  pup = BuildApodizedPupil(R, sqrt(3.)*R/2., N, Grid, BasisSegmentsCube, Gap); % pupil wo aberrations
+  Grid = BuildGrid(Radius, sqrt(3.)*Radius/2., Gap, Nb_Mirrors, Progress);
+  waitbar(0.1, Progress, 'Génération de la pupille 2');
+  BasisSegmentsCube = BuildApodizedSegment(Grid, Radius, sqrt(3.)*Radius/2., Nb_Mirrors,Progress); % segments
+  waitbar(0.2, Progress, 'Génération de la pupille 3');
+  pup = BuildApodizedPupil(Radius, sqrt(3.)*Radius/2., Nb_Mirrors, Grid, BasisSegmentsCube, Gap,Progress); % pupil wo aberrations
   writefits(sprintf('0-test %s.fits', name),pup);
     
   % Création de la pupille
@@ -13,54 +20,52 @@ function main(N, D, Op, Ol, yc, xc, m, res, l, name, i, mask)
   writefits(sprintf('1-Pupille %s.fits', name),p);
   
   % Création du masque
-  disp("   > Génération du masque");
+  waitbar(0.3, Progress, 'Génération du masque');
   M = FQPM(N, N/2, N/2);
   writefits("2-Masque.fits", M);
   
   % Pupille: TF -> PSF
-  disp("   > TF 1");
+  waitbar(0.4, Progress, 'TF 1');
   A = Shift_im2(p, N);
   writefits(sprintf('3-TFPupille %s.fits', name),abs(A).^2);
   a = A;
-
   % A: avec masque      a: sans masque
   
   % Application du masque
-  disp("   > Application du Masque");
+  waitbar(0.5, Progress, 'Application du masque');
   if mask == 1;
   A = A .* M;
   writefits(sprintf('4-TFMasque %s.fits', name), A);
   end;
   
   % TF-1
-  disp("   > TF 2");
+  waitbar(0.6, Progress, 'TF 2');
   A = fftshift(ifft2(fftshift(A)));
   writefits(sprintf('5-TFMasque2 %s.fits', name), abs(A).^2);
   
   % Création du Lyot
-  disp("   > Génération du Lyot Stop"); 
+  waitbar(0.7, Progress, 'Génération du Lyot Stop');
   L = mkpup(N, D*l, Ol);
   writefits(sprintf("6-Lyot %s.fits", name),L);
   
   % Application du Lyot
-  disp("   > Application du Lyot Stop");
+  waitbar(0.8, Progress, 'Application du Lyot Stop');
   A = A .* L;
   writefits(sprintf('7-ApplicationLyot %s.fits', name),abs(A).^2);
 
   % TF -> PSF Coronographique
-  disp("   > TF 3");
+  waitbar(0.9, Progress, 'TF 3');
   A = fftshift(fft2(fftshift(A)));
   writefits(sprintf('8-TFLyot %s.fits', name),abs(A).^2);
   
   
   % Profil radial PSF
-  disp("   > Génération du profile radial");
+  waitbar(1.0, Progress, 'Génération du profile radial');
   Max = max(max(abs(a)^2)); % Max 2D
   B = (abs(A)^2)/Max;
-  [Zr, R] = radialavg(B,m,0,0);
+  [Zr, R] = radialavg(B,m,0,0,Progress);
   
   % Plots
-  disp("   > Génération des plots");
   if mod(i,3) == 0;
   semilogy((R(1:res*12)*N/2)/res,Zr(1:res*12),'--','DisplayName',name);hold on;
   end;
@@ -76,5 +81,6 @@ function main(N, D, Op, Ol, yc, xc, m, res, l, name, i, mask)
   ylabel ({'Intensité normalisée'});
   set(gcf, 'name', 'Profil radial av masque');
 
-
+  close(Progress);
+  
 endfunction

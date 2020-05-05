@@ -1,7 +1,7 @@
 function simulations
   
   lambda = 4;
-  N = 10; % Taille Matrice
+  N = 2048; % Taille Matrice
   D = N/lambda; % Diamètre pupille
   Op   = [0.00 0.00 0.00 0.00 0.00]; % Obstruction centrale pupille
   Ol   = [0.00 0.00 0.00 0.00 0.00]; % Obstruction centrale Lyot
@@ -14,15 +14,28 @@ function simulations
   figure;
   
   i=1;
+  
+  
   name = sprintf('N=%d, D=%d, l=%.2f, Op=%.2f, Ol=%.2f, Without Mask', N, D, l(i), Op(i), Ol(i));
-  fprintf('Simulation for: %s ...\n', name);
-  main(N, D, Op(i), Ol(i), yc, xc, m, res, l(i), name, i, 0);
+  
+  Progress = waitbar(0.0, sprintf('Simulation %s', name));
+  pos_w1=get(Progress,'position');
+  pos_w2=[0 100 pos_w1(3) pos_w1(4)];
+  set(Progress,'position',pos_w2,'doublebuffer','on')
+  
+  fprintf('Simulations for: %s ...\n', name);
+  main(N, D, Op(i), Ol(i), yc, xc, m, res, l(i), name, i, 0, Progress);
+  
+  
   
   for i = 1:n
+    waitbar(i/n, Progress, sprintf('Simulation %s', name));
     name = sprintf('N=%d, D=%d, l=%.2f, Op=%.2f, Ol=%.2f, With Mask', N, D, l(i), Op(i), Ol(i));
     fprintf('Simulation for: %s ...\n', name);
-    main(N, D, Op(i), Ol(i), yc, xc, m, res, l(i), name, i, 1);
+    main(N, D, Op(i), Ol(i), yc, xc, m, res, l(i), name, i, 1, Progress);
   end
+  close(Progress);
+  
   legend
   
 endfunction

@@ -48,7 +48,7 @@
 
 
 
-function[Grid]=BuildGrid(R,Rb,Gap,N)
+function[Grid]=BuildGrid(R,Rb,Gap,N,ParentProgress)
 
 %DÉFINITION D'UN COMPTEUR D'OCCURENCE
 compteur=1;
@@ -70,12 +70,25 @@ grid_Y=2*Rb+Gap;
 
 %CONDITION SUR N NÉCESSAIRE POUR AVOIR LE BON FORMAT
 if(mod(N,2)==0)
+    disp("\b");
 
+    
     %CRÉATION DU RÉSEAU PRINCIPAL
+    Progress = waitbar(0.0, 'BuildGrid X');
+    pos_w1=get(ParentProgress,'position');
+    pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+    set(Progress,'position',pos_w2,'doublebuffer','on')
+
     for i=0:grid_X:X
+        waitbar(i/X, Progress, 'BuildGrid X');
+        Progress2 = waitbar(0.0, 'BuildGrid Y');
+        pos_w1=get(Progress,'position');
+        pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+        set(Progress2,'position',pos_w2,'doublebuffer','on')
 
         for j=0:grid_Y:Y
-
+            waitbar(j/Y, Progress2, 'BuildGrid Y');
+            
             %DÉFINITION DES ÉQUATION DES CÔTÉS DE L'HEXAGONE PUPILLAIRE
             A=(4*Rb+2*Gap)*N/4 - pente*i;
             B=-A;
@@ -102,13 +115,32 @@ if(mod(N,2)==0)
             end
 
         end
+        close(Progress2);
 
     end
+    close(Progress);
+  
+  
        
     %CRÉATION DU RÉSEAU SECONDAIRE (ENTRE LES MAILLES DU PRINCIPAL)
+    Progress = waitbar(0.0, 'BuildGrid2 X');
+    pos_w1=get(ParentProgress,'position');
+    pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+    set(Progress,'position',pos_w2,'doublebuffer','on')
+    
+    
     for i=grid_X/2:grid_X:X
-
+        
+        waitbar(i/X, Progress, 'BuildGrid2 X');
+                
+        Progress2 = waitbar(0.0, 'BuildGrid2 Y');
+        pos_w1=get(Progress,'position');
+        pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+        set(Progress2,'position',pos_w2,'doublebuffer','on')
+        
+        
         for j=grid_Y/2:grid_Y:Y
+            waitbar(j/Y, Progress, 'BuildGrid2 Y');
 
             %DÉFINITION DES ÉQUATION DES CÔTÉS DE L'HEXAGONE PUPILLAIRE
             A=(4*Rb+2*Gap)*N/4- pente*i;
@@ -136,15 +168,28 @@ if(mod(N,2)==0)
             end
 
         end
+        close(Progress2);
 
     end
+    close(Progress);
 
 else
 
     %CRÉATION DU RÉSEAU PRINCIPAL
+    Progress = waitbar(0.0, 'BuildGrid3 X');
+    pos_w1=get(ParentProgress,'position');
+    pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+    set(Progress,'position',pos_w2,'doublebuffer','on')
+    
     for i=0:grid_X:X
+        waitbar(i/X, Progress, 'BuildGrid3 X');
+        Progress2 = waitbar(0.0, 'BuildGrid3 Y');
+        pos_w1=get(Progress,'position');
+        pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+        set(Progress2,'position',pos_w2,'doublebuffer','on')
 
         for j=0:grid_Y:Y
+            waitbar(j/Y, Progress, 'BuildGrid3 Y');
 
             %DÉFINITION DES ÉQUATION DES CÔTÉS DE L'HEXAGONE PUPILLAIRE
             A=(4*Rb+2*Gap)*N/4 - pente*i;
@@ -172,13 +217,26 @@ else
             end
 
         end
+        close(Progress2);
 
     end
+    close(Progress);
 
     %CRÉATION DU RÉSEAU SECONDAIRE (ENTRE LES MAILLES DU PRINCIPAL)
+    Progress = waitbar(0.0, 'BuildGrid4 X');
+    pos_w1=get(ParentProgress,'position');
+    pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+    set(Progress,'position',pos_w2,'doublebuffer','on')
+        
     for i=grid_X/2:grid_X:X
+        waitbar(i/X, Progress, 'BuildGrid4 X');
+        Progress2 = waitbar(0.0, 'BuildGrid4 Y');
+        pos_w1=get(Progress,'position');
+        pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+        set(Progress2,'position',pos_w2,'doublebuffer','on')
 
         for j=grid_Y/2:grid_Y:Y
+            waitbar(j/Y, Progress, 'BuildGrid4 Y');
 
             %DÉFINITION DES ÉQUATION DES CÔTÉS DE L'HEXAGONE PUPILLAIRE
             A=(4*Rb+2*Gap)*N/4- pente*i;
@@ -206,8 +264,10 @@ else
             end
 
         end
+        close(Progress2);
 
     end
+    close(Progress);
 
 end
 

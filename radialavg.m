@@ -1,4 +1,4 @@
-function [Zr, R] = radialavg(z,m,xo,yo)
+function [Zr, R] = radialavg(z,m,xo,yo, ParentProgress)
 % RADIALAVG	 Radially averaqe 2D square matrix z into m bins
 %
 % [Zr, R] = RADIALAVG(z,m,xo,yo)
@@ -70,7 +70,13 @@ Zr = zeros(1,m); % vector for radial average
 nans = ~isnan(z); % identify NaNs in input data
 
 % loop over the bins, except the final (r=1) position
+Progress = waitbar(0.0, 'Profile Radial');
+pos_w1=get(ParentProgress,'position');
+pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+set(Progress,'position',pos_w2,'doublebuffer','on')
+
 for j=1:m-1
+  waitbar(j/(m-1), Progress, 'Profile Radial');
 	% find all matrix locations whose radial distance is in the jth bin
 	bins = r>=rbins(j) & r<rbins(j+1);
 	
@@ -87,6 +93,8 @@ for j=1:m-1
 		Zr(j) = NaN;
 	end
 end
+
+close(Progress);
 
 % special case the last bin location to not average Z values for
 % radial distances in the corners, beyond R=1

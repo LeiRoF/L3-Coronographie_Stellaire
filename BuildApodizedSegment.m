@@ -1,4 +1,4 @@
-function [SegmentTab]=BuildApodizedSegment(GridVector,r,rb,N)
+function [SegmentTab]=BuildApodizedSegment(GridVector,r,rb,N,ParentProgress)
 
 SegmentTab=zeros(2*ceil(r)+2,2*ceil(r)+2,3*N*(N+1)+1);
 SegmentStart=zeros(length(GridVector),1);
@@ -7,6 +7,12 @@ DeltaXLim=(3+sqrt(3))/6;
 DeltaxLim=(3-sqrt(3))/6;
 
 XLim=rb/sqrt(3);
+
+
+Progress = waitbar(0.0, 'BuildApodizedSegment 1');
+pos_w1=get(ParentProgress,'position');
+pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+set(Progress,'position',pos_w2,'doublebuffer','on')
 
 for s=1:length(GridVector)
     
@@ -20,8 +26,24 @@ for s=1:length(GridVector)
     %     LocalStartX=0;
     SegmentStart(s)=floor(CenterY)-(r+1);
     
+    
+    waitbar(s/length(GridVector), Progress, 'BuildApodizedSegment 1');
+    Progress2 = waitbar(0.0, 'BuildApodizedSegment 2');
+    pos_w1=get(Progress,'position');
+    pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+    set(Progress2,'position',pos_w2,'doublebuffer','on')
+    
     for i=1:2*ceil(r)+2
+      
+        waitbar(i/(2*ceil(r)+2), Progress2, 'BuildApodizedSegment 2');
+        Progress3 = waitbar(0.0, 'BuildApodizedSegment 3');
+        pos_w1=get(Progress2,'position');
+         pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+        set(Progress3,'position',pos_w2,'doublebuffer','on')
+      
         for j=1:2*ceil(r)+2
+          
+            waitbar(j/(2*ceil(r)+2), Progress3, 'BuildApodizedSegment 3');
             
             LocalY=-(i-(r+1)-LocalStartY-1/2);
             LocalX=j-(r+1)-LocalStartX-1/2;
@@ -539,8 +561,11 @@ for s=1:length(GridVector)
             
             
         end
+        close(Progress3);
     end
+    close(Progress2);
     
     %end
     
 end
+close(Progress);
