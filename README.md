@@ -1,1 +1,1 @@
-Projet-Coronographie
+Coronographie
