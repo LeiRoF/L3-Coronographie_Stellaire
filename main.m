@@ -1,22 +1,16 @@
-function main(N, D, Op, Ol, yc, xc, m, res, l, name, i, mask, ParentProgress)
+function main(N, D, Op, Ol, yc, xc, m, res, l, name, i, mask, pup, ParentProgress)
   
-  Progress = waitbar(0.0, 'Génération de la pupille');
+  Progress = waitbar(0.1, 'Génération de la pupille');
   pos_w1=get(ParentProgress,'position');
   pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
   set(Progress,'position',pos_w2,'doublebuffer','on')
-  
-  Nb_Mirrors = 7;
-  Radius = 5;
-  Gap = 1;
-  Grid = BuildGrid(Radius, sqrt(3.)*Radius/2., Gap, Nb_Mirrors, Progress);
-  waitbar(0.1, Progress, 'Génération de la pupille 2');
-  BasisSegmentsCube = BuildApodizedSegment(Grid, Radius, sqrt(3.)*Radius/2., Nb_Mirrors,Progress); % segments
-  waitbar(0.2, Progress, 'Génération de la pupille 3');
-  pup = BuildApodizedPupil(Radius, sqrt(3.)*Radius/2., Nb_Mirrors, Grid, BasisSegmentsCube, Gap,Progress); % pupil wo aberrations
-  writefits(sprintf('0-test %s.fits', name),pup);
-    
+
   % Création de la pupille
   p = mkpup(N ,D ,Op);
+  
+  % Application de la pupille au miroir
+  p = pup .* p;
+  waitbar(0.2, Progress, 'Application de la pupille');
   writefits(sprintf('1-Pupille %s.fits', name),p);
   
   % Création du masque

@@ -57,6 +57,9 @@ compteur=1;
 X=((3*N+2)*R+N*sqrt(3)*Gap);
 Y=((4*N+2)*Rb+2*N*Gap)+R;
 
+disp(X);
+disp(Y);
+
 %DÉFINITION DE LA PENTE DES BORDS DU RÉSEAU NÉCESSAIRE POUR CONTRAINDRE LES
 %SEGMENT À LA FORME HEXAGONALE DE LA PUPILLE
 pente=(2*Rb+Gap)/(3*R+sqrt(3)*Gap);
