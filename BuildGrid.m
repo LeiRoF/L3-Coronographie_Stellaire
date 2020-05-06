@@ -50,6 +50,16 @@
 
 function[Grid]=BuildGrid(R,Rb,Gap,N,ParentProgress)
 
+Progress = waitbar(0.0, 'BuildGrid X');
+    pos_w1=get(ParentProgress,'position');
+    pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+    set(Progress,'position',pos_w2,'doublebuffer','on')
+    
+Progress2 = waitbar(0.0, 'BuildGrid Y');
+        pos_w1=get(Progress,'position');
+        pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+        set(Progress2,'position',pos_w2,'doublebuffer','on')
+
 %DÉFINITION D'UN COMPTEUR D'OCCURENCE
 compteur=1;
 
@@ -65,7 +75,7 @@ disp(Y);
 pente=(2*Rb+Gap)/(3*R+sqrt(3)*Gap);
 
 %INITIALISATION DU VECTEUR CONTENANT LES POSITIONS DES CENTRES
-Grid=zeros(3*N*(N+1)+1,2);
+Grid=zeros(3*N*(N+1)+1);
 
 %DÉFINITION DU PAS VERTICAL ET HORIZONTAL DU RÉSEAU
 grid_X=3*R+sqrt(3)*Gap;
@@ -77,17 +87,12 @@ if(mod(N,2)==0)
 
     
     %CRÉATION DU RÉSEAU PRINCIPAL
-    Progress = waitbar(0.0, 'BuildGrid X');
-    pos_w1=get(ParentProgress,'position');
-    pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
-    set(Progress,'position',pos_w2,'doublebuffer','on')
+    waitbar(0.0, Progress, 'BuildGrid X');
 
     for i=0:grid_X:X
         waitbar(i/X, Progress, 'BuildGrid X');
-        Progress2 = waitbar(0.0, 'BuildGrid Y');
-        pos_w1=get(Progress,'position');
-        pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
-        set(Progress2,'position',pos_w2,'doublebuffer','on')
+        waitbar(0.0, Progress2, 'BuildGrid Y');
+        
 
         for j=0:grid_Y:Y
             waitbar(j/Y, Progress2, 'BuildGrid Y');
@@ -118,28 +123,18 @@ if(mod(N,2)==0)
             end
 
         end
-        close(Progress2);
 
     end
-    close(Progress);
   
   
        
     %CRÉATION DU RÉSEAU SECONDAIRE (ENTRE LES MAILLES DU PRINCIPAL)
-    Progress = waitbar(0.0, 'BuildGrid2 X');
-    pos_w1=get(ParentProgress,'position');
-    pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
-    set(Progress,'position',pos_w2,'doublebuffer','on')
-    
+    waitbar(0.0, Progress, 'BuildGrid2 X');
     
     for i=grid_X/2:grid_X:X
         
         waitbar(i/X, Progress, 'BuildGrid2 X');
-                
-        Progress2 = waitbar(0.0, 'BuildGrid2 Y');
-        pos_w1=get(Progress,'position');
-        pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
-        set(Progress2,'position',pos_w2,'doublebuffer','on')
+        waitbar(0.0, Progress2, 'BuildGrid2 Y');
         
         
         for j=grid_Y/2:grid_Y:Y
@@ -171,25 +166,17 @@ if(mod(N,2)==0)
             end
 
         end
-        close(Progress2);
 
     end
-    close(Progress);
 
 else
 
     %CRÉATION DU RÉSEAU PRINCIPAL
-    Progress = waitbar(0.0, 'BuildGrid3 X');
-    pos_w1=get(ParentProgress,'position');
-    pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
-    set(Progress,'position',pos_w2,'doublebuffer','on')
+    waitbar(0.0, Progress, 'BuildGrid3 X');
     
     for i=0:grid_X:X
         waitbar(i/X, Progress, 'BuildGrid3 X');
-        Progress2 = waitbar(0.0, 'BuildGrid3 Y');
-        pos_w1=get(Progress,'position');
-        pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
-        set(Progress2,'position',pos_w2,'doublebuffer','on')
+        waitbar(0.0, Progress2, 'BuildGrid3 Y');
 
         for j=0:grid_Y:Y
             waitbar(j/Y, Progress, 'BuildGrid3 Y');
@@ -220,23 +207,15 @@ else
             end
 
         end
-        close(Progress2);
 
     end
-    close(Progress);
 
     %CRÉATION DU RÉSEAU SECONDAIRE (ENTRE LES MAILLES DU PRINCIPAL)
-    Progress = waitbar(0.0, 'BuildGrid4 X');
-    pos_w1=get(ParentProgress,'position');
-    pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
-    set(Progress,'position',pos_w2,'doublebuffer','on')
+    waitbar(0.0, Progress, 'BuildGrid4 X');
         
     for i=grid_X/2:grid_X:X
         waitbar(i/X, Progress, 'BuildGrid4 X');
-        Progress2 = waitbar(0.0, 'BuildGrid4 Y');
-        pos_w1=get(Progress,'position');
-        pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
-        set(Progress2,'position',pos_w2,'doublebuffer','on')
+        waitbar(0.0, Progress2, 'BuildGrid4 Y');
 
         for j=grid_Y/2:grid_Y:Y
             waitbar(j/Y, Progress, 'BuildGrid4 Y');
@@ -267,12 +246,16 @@ else
             end
 
         end
-        close(Progress2);
+        
 
     end
-    close(Progress);
+  
 
 end
 
+close(Progress2);
+close(Progress);
     
 end
+
+

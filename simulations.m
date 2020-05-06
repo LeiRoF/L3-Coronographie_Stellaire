@@ -20,7 +20,7 @@ function simulations
 
   
   # Mirroir Segmenté
-  div = 128; % micrometres par pixel
+  div = 64; % micrometres par pixel
   D = 7.7*1000/div;
   if isfile('0-Mirror.fits')
     [pup,hdr] = readfits('0-Mirror.fits');
@@ -33,6 +33,8 @@ function simulations
     pup = BuildApodizedPupil(Radius, sqrt(3.)*Radius/2., Nb_Mirrors, Grid, BasisSegmentsCube, Gap,Progress); % pupil wo aberrations
     writefits('0-Mirror.fits',pup);
   end
+  
+  writefits(sprintf('0-Test'),pup);
   
   [N,osef]=size(pup);
   disp(N);

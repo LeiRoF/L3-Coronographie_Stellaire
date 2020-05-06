@@ -10,9 +10,19 @@ XLim=rb/sqrt(3);
 
 
 Progress = waitbar(0.0, 'BuildApodizedSegment 1');
-pos_w1=get(ParentProgress,'position');
-pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
-set(Progress,'position',pos_w2,'doublebuffer','on')
+    pos_w1=get(ParentProgress,'position');
+    pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+    set(Progress,'position',pos_w2,'doublebuffer','on')
+
+Progress2 = waitbar(0.0, 'BuildApodizedSegment 2');
+    pos_w1=get(Progress,'position');
+    pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+    set(Progress2,'position',pos_w2,'doublebuffer','on')
+    
+Progress3 = waitbar(0.0, 'BuildApodizedSegment 3');
+    pos_w1=get(Progress2,'position');
+    pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
+    set(Progress3,'position',pos_w2,'doublebuffer','on')
 
 for s=1:length(GridVector)
     
@@ -28,18 +38,13 @@ for s=1:length(GridVector)
     
     
     waitbar(s/length(GridVector), Progress, 'BuildApodizedSegment 1');
-    Progress2 = waitbar(0.0, 'BuildApodizedSegment 2');
-    pos_w1=get(Progress,'position');
-    pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
-    set(Progress2,'position',pos_w2,'doublebuffer','on')
+    waitbar(0.0, Progress2, 'BuildApodizedSegment 2');
     
     for i=1:2*ceil(r)+2
       
         waitbar(i/(2*ceil(r)+2), Progress2, 'BuildApodizedSegment 2');
-        Progress3 = waitbar(0.0, 'BuildApodizedSegment 3');
-        pos_w1=get(Progress2,'position');
-         pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
-        set(Progress3,'position',pos_w2,'doublebuffer','on')
+        waitbar(0.0, Progress3, 'BuildApodizedSegment 3');
+        
       
         for j=1:2*ceil(r)+2
           
@@ -561,11 +566,13 @@ for s=1:length(GridVector)
             
             
         end
-        close(Progress3);
+        
     end
-    close(Progress2);
+    
     
     %end
     
 end
 close(Progress);
+close(Progress3);
+close(Progress2);
