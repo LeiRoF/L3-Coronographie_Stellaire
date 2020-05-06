@@ -75,7 +75,7 @@ disp(Y);
 pente=(2*Rb+Gap)/(3*R+sqrt(3)*Gap);
 
 %INITIALISATION DU VECTEUR CONTENANT LES POSITIONS DES CENTRES
-Grid=zeros(3*N*(N+1)+1);
+Grid=zeros(3*N*(N+1)+1, 2);
 
 %DÉFINITION DU PAS VERTICAL ET HORIZONTAL DU RÉSEAU
 grid_X=3*R+sqrt(3)*Gap;
