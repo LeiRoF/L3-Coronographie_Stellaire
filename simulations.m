@@ -7,6 +7,8 @@ function simulations
   
   lambda = 4;
   div = 16; % micrometres par pixel
+  nb_arms = 6;
+  arms_width = ceil(0.1*1000/div);
   D = 7.7*1000/div;
   N = ceil(D)*lambda;
   
@@ -15,8 +17,8 @@ function simulations
   Gap = 4/div;
   
   Op   = [0.30 0.30 0.30 0.30 0.30]; % Obstruction centrale pupille
-  Ol   = [0.30 0.30 0.30 0.30 0.30]; % Obstruction centrale Lyot
-  l    = [1.00 0.95 0.90 0.85 0.80]; % Diamètre Lyot (pourcentage pupille)
+  Ol   = [0.40 0.40 0.50 0.40 0.50]; % Obstruction centrale Lyot
+  l    = [1.00 0.90 0.90 0.80 0.80]; % Diamètre Lyot (pourcentage pupille)
   
   yc = 0; % Position x centre
   xc = 0; % Position y centre
@@ -24,6 +26,8 @@ function simulations
   res = N/D; % Résolution angulaire
   n = 5;
   figure;
+  
+  
   
   
 
@@ -42,10 +46,6 @@ function simulations
   
   % Rendre la matrice carré
   [N1,N2]=size(pup);
-  disp('Avant');
-  disp(N);
-  disp(N1);
-  disp(N2);
   
   if(N1 > N2 )
     diff = ceil((N1-N2)/2);
@@ -56,11 +56,8 @@ function simulations
   writefits(fname,pup);
   
   [N1,N2]=size(pup);
-  disp('Pendant');
-  disp(N1);
-  disp(N2);
-  % Aggrandir la matrice pour avoir le bon lambda
   
+  % Aggrandir la matrice pour avoir le bon lambda
   %Ajout lignes
   for(i=1:N-N1)
     if(mod(i,2)==0)
@@ -78,14 +75,9 @@ function simulations
     end
   end
   [N1,N2]=size(pup);
-  disp('Final');
-  disp(N1);
-  disp(N2);
   
   
-  if(mod(N1,2)==1)
-    %Recentrer de +0,5 pixel
-  end
+  pup = pup .* mkspider(N, nb_arms, arms_width);
   
   
   
@@ -94,7 +86,7 @@ function simulations
   name = sprintf('N=%d, D=%d, l=%.2f, Op=%.2f, Ol=%.2f, Without Mask', N, D, l(i), Op(i), Ol(i));
   waitbar(0.0, Progress, sprintf('Simulation %s', name))
   fprintf('Simulations for: %s ...\n', name);
-  main(N, D, Op(i), Ol(i), yc, xc, m, lambda, l(i), name, i, 0, pup, Progress);
+  process(N, D, Op(i), Ol(i), yc, xc, m, lambda, l(i), name, i, 0, pup, Progress);
   
   
   # Simulations with mask
@@ -102,7 +94,7 @@ function simulations
     waitbar(i/n, Progress, sprintf('Simulation %s', name));
     name = sprintf('N=%d, D=%d, l=%.2f, Op=%.2f, Ol=%.2f, With Mask', N, D, l(i), Op(i), Ol(i));
     fprintf('Simulation for: %s ...\n', name);
-    main(N, D, Op(i), Ol(i), yc, xc, m, lambda, l(i), name, i, 1, pup, Progress);
+    process(N, D, Op(i), Ol(i), yc, xc, m, lambda, l(i), name, i, 1, pup, Progress);
   end
   close(Progress);
   

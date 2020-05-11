@@ -1,4 +1,4 @@
-function main(N, D, Op, Ol, yc, xc, m, res, l, name, i, mask, pup, ParentProgress)
+function process(N, D, Op, Ol, yc, xc, m, res, l, name, i, mask, pup, ParentProgress)
   
   Progress = waitbar(0.1, 'Génération de la pupille');
   pos_w1=get(ParentProgress,'position');
