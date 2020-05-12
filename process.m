@@ -1,4 +1,4 @@
-function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, name, i, mask, nb_Mirrors, Radius, Gap, nb_arms, arms_width, Progress)
+function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, name, i, mask, nb_Mirrors, Radius, Gap, nb_arms, arms_width, arms_width_lyot, Progress)
   
   % __________________________________________________  
   % Génération ou récupération du mirroir segmenté
@@ -129,7 +129,7 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, name, i, mask, 
   
   waitbar(0.7, Progress, 'Génération du Lyot Stop');
   L = mkpup(N, D*l, Ol);
-  L = L .* mkspider(N, nb_arms, arms_width);
+  L = L .* mkspider(N, nb_arms, arms_width_lyot);
   writefits(sprintf("6-Lyot %s.fits", name),L);
   
   % __________________________________________________ 

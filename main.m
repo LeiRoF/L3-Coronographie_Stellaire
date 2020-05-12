@@ -7,15 +7,16 @@ function main
   
   if !any(strcmp({ver.Name}, 'image'))
     pkg install -forge image
-    pkg load image
   end
+  
+  pkg load image
   
   figure;
  
   % __________________________________________________  
   % Récupération de la configuration
   
-  [n, airy, div, D, nb_arms, arms_width, nb_Mirrors, Diametre, Gap, Op, Ol, l, mask] = config(0);
+  [n, airy, div, D, nb_arms, arms_width, arms_width_lyot, nb_Mirrors, Diametre, Gap, Op, Ol, l, mask] = config(0);
   
   % __________________________________________________  
   % Barres de progression
@@ -68,7 +69,7 @@ for simu=0:n
   % Run simulations 
     
   fprintf('Simulation for: %s ...\n', name);
-  process(N, D, div, Op, Ol, yc, xc, m, airy, l, name, simu, mask, nb_Mirrors, Radius, Gap, nb_arms, arms_width, Progress);
+  process(N, D, div, Op, Ol, yc, xc, m, airy, l, name, simu, mask, nb_Mirrors, Radius, Gap, nb_arms, arms_width, arms_width_lyot, Progress);
   
 end
   
