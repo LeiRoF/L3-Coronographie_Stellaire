@@ -1,10 +1,10 @@
 function [n, airy, div, D, nb_arms, arms_width, arms_width_lyot, nb_Mirrors, Diametre, Gap, Op, Ol, l, mask] = config(i)
   
-  n                = 0;           % Nombre de simulations à faire tourner
+  n                = 1;           % Nombre de simulations à faire tourner
                                   % Le paramètre i va de 0 à n
   
   % __________________________________________________ 
-  % Paramètres de base
+  % Paramètres par défaut
   
   airy             = 4;           % Résolution (nombre de pixels de définition de la tache d'Airy)
   div              = 64;          % Résolution en pixel/micromètre
@@ -27,8 +27,8 @@ function [n, airy, div, D, nb_arms, arms_width, arms_width_lyot, nb_Mirrors, Dia
   % __________________________________________________ 
   % Paramètres en fonction de la simulation
   
-  if i != 0
-     Ol = 0.30 + i/10;
+  if i == 0
+     mask = 0;
   end
             
             

@@ -47,34 +47,21 @@ for simu=0:n
   D = D/div;
   N = ceil(D)*airy;
   
-  
   Radius = Diametre/(2*div);
   Gap = Gap/div;
   
   yc = 0; % Position x centre
   xc = 0; % Position y centre
   m = N/2; % Bins number
-  
-  % __________________________________________________  
-  % Nom de la simulation
-  
-  if mask == 0
-    name = sprintf('N=%d, D=%d, l=%.2f, Op=%.2f, Ol=%.2f, Without Mask', N, D, l, Op, Ol);
-  else
-    name = sprintf('N=%d, D=%d, l=%.2f, Op=%.2f, Ol=%.2f, With Mask', N, D, l, Op, Ol);
-  end
-  
-  if n != 0
-     waitbar(simu/n, ParentProgress, sprintf('Simulation %s', name));
-  else
-     waitbar(1, ParentProgress, sprintf('Simulation %s', name));
-  end
-  
+    
   % __________________________________________________ 
   % Run simulations 
+  
+  name = sprintf('Simulation %d / %d', simu+1, n+1);
+  waitbar((simu+1)/(n+1), ParentProgress, name);
     
   fprintf('Simulation for: %s ...\n', name);
-  process(N, D, div, Op, Ol, yc, xc, m, airy, l, name, simu, mask, nb_Mirrors, Radius, Gap, nb_arms, arms_width, arms_width_lyot, Progress);
+  process(N, D, div, Op, Ol, yc, xc, m, airy, l, simu, mask, nb_Mirrors, Radius, Gap, nb_arms, arms_width, arms_width_lyot, Progress);
   
 end
   

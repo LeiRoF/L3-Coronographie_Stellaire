@@ -1,9 +1,11 @@
-function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, name, i, mask, nb_Mirrors, Radius, Gap, nb_arms, arms_width, arms_width_lyot, Progress)
+function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, nb_Mirrors, Radius, Gap, nb_arms, arms_width, arms_width_lyot, Progress)
+  
+  name = sprintf('D=%d, Div=%d, l=%.2f, Op=%.2f, Ol=%.2f', D, div, l, Op, Ol);
   
   % __________________________________________________  
   % Génération ou récupération du mirroir segmenté
   
-  fname = sprintf('0-Mirror div=%d.fits', div);
+  fname = sprintf('0-Mirror Div = %d px.um-1, Segments = %d, Radius= %.2f um, Gap = %.2f um.fits', div, nb_Mirrors, Radius, Gap);
   if isfile(fname)
     waitbar(0.0, Progress, 'Recuperation of existing mirror');
     [pup,hdr] = readfits(fname);
