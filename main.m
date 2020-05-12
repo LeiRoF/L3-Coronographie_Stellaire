@@ -53,6 +53,9 @@ for simu=0:n
   xc = 0; % Position y centre
   m = N/2; % Bins number
   
+  % __________________________________________________  
+  % Nom de la simulation
+  
   if mask == 0
     name = sprintf('N=%d, D=%d, l=%.2f, Op=%.2f, Ol=%.2f, Without Mask', N, D, l, Op, Ol);
   else

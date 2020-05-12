@@ -1,7 +1,7 @@
 function [n, airy, div, D, nb_arms, arms_width, arms_width_lyot, nb_Mirrors, Diametre, Gap, Op, Ol, l, mask] = config(i)
   
   n                = 0;           % Nombre de simulations à faire tourner
-                                % Le paramètre i va de 0 à n
+                                  % Le paramètre i va de 0 à n
   
   % __________________________________________________ 
   % Paramètres de base
