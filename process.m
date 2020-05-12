@@ -1,4 +1,80 @@
-function [Zr, R] = process(N, D, Op, Ol, yc, xc, m, res, l, name, i, mask, pup, Progress)
+function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, name, i, mask, nb_Mirrors, Radius, Gap, nb_arms, arms_width, Progress)
+  
+  % __________________________________________________  
+  % Génération ou récupération du mirroir segmenté
+  
+  fname = sprintf('0-Mirror div=%d.fits', div);
+  if isfile(fname)
+    waitbar(0.0, Progress, 'Recuperation of existing mirror');
+    [pup,hdr] = readfits(fname);
+  else
+    waitbar(0.0, Progress, 'Generating mirror');
+    Grid = BuildGrid(Radius, sqrt(3.)*Radius/2., Gap, nb_Mirrors, Progress);
+    BasisSegmentsCube = BuildApodizedSegment(Grid, Radius, sqrt(3.)*Radius/2., nb_Mirrors,Progress); % segments
+    pup = BuildApodizedPupil(Radius, sqrt(3.)*Radius/2., nb_Mirrors, Grid, BasisSegmentsCube, Gap,Progress); % pupil wo aberrations
+    
+  end
+  
+  % __________________________________________________ 
+  % Rendre la matrice du miroir carrée
+  disp('1');
+  [N1,N2]=size(pup)
+  
+  
+  if(N1 > N2 )
+    diff = ceil((N1-N2)/2);
+    
+    pup=[pup zeros(N1,diff)]; % Ajout lignes
+    if(mod(N1-N2,2)==0)
+      pup=[zeros(N1,diff) pup];
+    else
+      pup=[zeros(N1,diff-1) pup];
+    end
+  end
+  
+  disp('2');
+  [N1,N2]=size(pup)
+  
+  if(N2 > N1)
+    diff = ceil((N2-N1)/2);
+    
+    pup=[pup ; zeros(diff, N2)]; % Ajout colonnes
+    if(mod(N1-N2,2)==0)
+      pup=[zeros(diff, N2) ; pup];
+    else 
+      pup=[zeros(diff-1, N2) ; pup];
+    end
+  end
+  
+  writefits(fname,pup);
+  
+  disp('3');
+  [N1,N2]=size(pup)
+  
+  % __________________________________________________ 
+  % Aggrandir la matrice pour avoir le bon lambda
+  
+  for(i=1:N-N1)     % Ajout lignes
+    waitbar(i/(N-N1), Progress, 'Resize matrix on X');
+    if(mod(i,2)==0)
+      pup=[pup zeros(N1,1)];
+    else
+      pup=[zeros(N1,1) pup];
+    end
+  end
+ 
+  [N1,N2]=size(pup);
+  for(i=1:N-N1)     % Ajout colonnes
+    waitbar(i/(N-N1), Progress, 'Resize matrix on Y');
+    if(mod(i,2)==0)
+      pup=[pup ; zeros(1,N2)];
+    else
+      pup=[zeros(1,N2) ; pup];
+    end
+  end
+  [N1,N2]=size(pup);
+  
+  pup = pup .* mkspider(N, nb_arms, arms_width);
   
   % __________________________________________________ 
   % Création de la pupille
@@ -53,6 +129,7 @@ function [Zr, R] = process(N, D, Op, Ol, yc, xc, m, res, l, name, i, mask, pup, 
   
   waitbar(0.7, Progress, 'Génération du Lyot Stop');
   L = mkpup(N, D*l, Ol);
+  L = L .* mkspider(N, nb_arms, arms_width);
   writefits(sprintf("6-Lyot %s.fits", name),L);
   
   % __________________________________________________ 

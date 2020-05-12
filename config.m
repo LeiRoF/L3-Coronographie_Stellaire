@@ -7,7 +7,7 @@ function [n, lambda, div, D, nb_arms, arms_width, nb_Mirrors, Diametre, Gap, Op,
   % Paramètres de base
   
   lambda         = 4;           % Résolution (nombre de pixels de définition de la tache d'Airy)
-  div            = 16;          % Résolution en pixel/micromètre
+  div            = 64;          % Résolution en pixel/micromètre
   D              = 7.7*1000;    % Diamètre de la pupille en micromètre
 
   nb_arms        = 6;           % Nombre de bras pour l'araignée

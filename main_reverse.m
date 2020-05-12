@@ -1,4 +1,4 @@
-function main
+function main_reverse
   
   % __________________________________________________  
   % Installation des prérequis
@@ -47,7 +47,7 @@ end
   
   % __________________________________________________ 
   % End
-  close(Progress);
+  close("all");
   close(ParentProgress);
   
 endfunction
