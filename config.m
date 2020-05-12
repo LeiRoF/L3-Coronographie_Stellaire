@@ -1,4 +1,4 @@
-function [n, lambda, div, D, nb_arms, arms_width, nb_Mirrors, Diametre, Gap, Op, Ol, l, mask] = config(i)
+function [n, airy, div, D, nb_arms, arms_width, nb_Mirrors, Diametre, Gap, Op, Ol, l, mask] = config(i)
   
   n              = 0;           % Nombre de simulations à faire tourner
                                 % Le paramètre i va de 0 à n
@@ -6,7 +6,7 @@ function [n, lambda, div, D, nb_arms, arms_width, nb_Mirrors, Diametre, Gap, Op,
   % __________________________________________________ 
   % Paramètres de base
   
-  lambda         = 4;           % Résolution (nombre de pixels de définition de la tache d'Airy)
+  airy         = 4;           % Résolution (nombre de pixels de définition de la tache d'Airy)
   div            = 64;          % Résolution en pixel/micromètre
   D              = 7.7*1000;    % Diamètre de la pupille en micromètre
 

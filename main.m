@@ -15,7 +15,7 @@ function main
   % __________________________________________________  
   % Récupération de la configuration
   
-  [n, lambda, div, D, nb_arms, arms_width, nb_Mirrors, Diametre, Gap, Op, Ol, l, mask] = config(0);
+  [n, airy, div, D, nb_arms, arms_width, nb_Mirrors, Diametre, Gap, Op, Ol, l, mask] = config(0);
   
   % __________________________________________________  
   % Barres de progression
@@ -36,14 +36,14 @@ for simu=0:n
   % __________________________________________________  
   % Configuration de la simulation
   
-  [n, lambda, div, D, nb_arms, armos_width, nb_Mirrors, Diametre, Gap, Op, Ol, l, mask] = config(simu);
+  [n, airy, div, D, nb_arms, armos_width, nb_Mirrors, Diametre, Gap, Op, Ol, l, mask] = config(simu);
   
   % __________________________________________________  
   % Modification des paramètres
   
   arms_width = ceil(arms_width/div);
   D = D/div;
-  N = ceil(D)*lambda;
+  N = ceil(D)*airy;
   
   Radius = Diametre/(2*div);
   Gap = Gap/div;
@@ -68,7 +68,7 @@ for simu=0:n
   % Run simulations 
     
   fprintf('Simulation for: %s ...\n', name);
-  process(N, D, div, Op, Ol, yc, xc, m, lambda, l, name, simu, mask, nb_Mirrors, Radius, Gap, nb_arms, arms_width, Progress);
+  process(N, D, div, Op, Ol, yc, xc, m, airy, l, name, simu, mask, nb_Mirrors, Radius, Gap, nb_arms, arms_width, Progress);
   
 end
   

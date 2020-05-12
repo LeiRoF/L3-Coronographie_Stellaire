@@ -52,7 +52,7 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, name, i, mask, 
   [N1,N2]=size(pup)
   
   % __________________________________________________ 
-  % Aggrandir la matrice pour avoir le bon lambda
+  % Aggrandir la matrice pour avoir le bon nombre de pixel sur la tache d'airy
   
   for(i=1:N-N1)     % Ajout lignes
     waitbar(i/(N-N1), Progress, 'Resize matrix on X');
