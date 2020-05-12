@@ -37,14 +37,16 @@ for simu=0:n
   % __________________________________________________  
   % Configuration de la simulation
   
-  [n, airy, div, D, nb_arms, armos_width, nb_Mirrors, Diametre, Gap, Op, Ol, l, mask] = config(simu);
+  [n, airy, div, D, nb_arms, armos_width, arms_width_lyot, nb_Mirrors, Diametre, Gap, Op, Ol, l, mask] = config(simu);
   
   % __________________________________________________  
   % Modification des paramètres
   
   arms_width = ceil(arms_width/div);
+  arms_width_lyot = ceil(arms_width*arms_width_lyot/100);
   D = D/div;
   N = ceil(D)*airy;
+  
   
   Radius = Diametre/(2*div);
   Gap = Gap/div;

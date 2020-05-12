@@ -12,7 +12,7 @@ function [n, airy, div, D, nb_arms, arms_width, arms_width_lyot, nb_Mirrors, Dia
 
   nb_arms          = 6;           % Nombre de bras pour l'araignée
   arms_width       = 0.1*1000;    % Largeur des bras en micromètre
-  arms_width_lyot  = 0.1*1000;    % Largeur des bras en micromètre
+  arms_width_lyot  = 100;         % En % de arms_width
               
   nb_Mirrors       = 7;           % Nombre de miroir consitituant le diamètre du miroir principal
   Diametre         = 700;         % Rayon des miroirs en micromètre

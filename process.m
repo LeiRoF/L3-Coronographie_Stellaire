@@ -17,9 +17,8 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, name, i, mask, 
   
   % __________________________________________________ 
   % Rendre la matrice du miroir carrée
-  disp('1');
-  [N1,N2]=size(pup)
   
+  [N1,N2]=size(pup);
   
   if(N1 > N2 )
     diff = ceil((N1-N2)/2);
@@ -32,8 +31,7 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, name, i, mask, 
     end
   end
   
-  disp('2');
-  [N1,N2]=size(pup)
+  [N1,N2]=size(pup);
   
   if(N2 > N1)
     diff = ceil((N2-N1)/2);
@@ -48,8 +46,7 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, name, i, mask, 
   
   writefits(fname,pup);
   
-  disp('3');
-  [N1,N2]=size(pup)
+  [N1,N2]=size(pup);
   
   % __________________________________________________ 
   % Aggrandir la matrice pour avoir le bon nombre de pixel sur la tache d'airy
