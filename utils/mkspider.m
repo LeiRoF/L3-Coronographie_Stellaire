@@ -22,10 +22,6 @@ for i=1:nb_arms
   % Ajout du bras dans la matrice principale
   res = res .* mat;
   
-  % Debug
-  writefits(sprintf('Test %d.fits', i), res);
 end
 
-% Debug
-writefits('Test final.fits', res);
 end
