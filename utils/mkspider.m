@@ -21,7 +21,7 @@ for i=1:nb_arms
   
   if(mod(width,2)==1)
     mat(dim/2+1-ceil(width/2):dim/2+ceil(width/2),floor(dim/2):dim) = 0.5;
-  
+  end
   % Tracage du bras du centre de la matrice jusqu'au coté droit avec une épaisseur width
   mat(dim/2+1-floor(width/2):dim/2+floor(width/2),floor(dim/2):dim) = 0;
   
