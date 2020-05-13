@@ -1,13 +1,13 @@
 function [n, airy, div, D, nb_arms, arms_width, arms_width_lyot, nb_Mirrors, Diametre, Gap, Op, Ol, l, mask] = config(i)
   
-  n                = 1;           % Nombre de simulations à faire tourner
+  n                = 5;           % Nombre de simulations à faire tourner
                                   % Le paramètre i va de 0 à n
   
   % __________________________________________________ 
   % Paramètres par défaut
   
   airy             = 4;           % Résolution (nombre de pixels de définition de la tache d'Airy)
-  div              = 64;          % Résolution en pixel/micromètre
+  div              = 128;          % Résolution en pixel/micromètre
   D                = 7.7*1000;    % Diamètre de la pupille en micromètre
 
   nb_arms          = 6;           % Nombre de bras pour l'araignée
@@ -18,7 +18,7 @@ function [n, airy, div, D, nb_arms, arms_width, arms_width_lyot, nb_Mirrors, Dia
   Diametre         = 700;         % Rayon des miroirs en micromètre
   Gap              = 4;           % Espacement des miroirs en micromètre
 
-  Op               = 0.30;        % Obstruction centrale pupille en %
+  Op               = 0.00;        % Obstruction centrale pupille en %
   Ol               = 0.30;        % Obstruction centrale Lyot en %
   l                = 0.95;        % Diamètre Lyot en % de la pupille principale
   mask             = 1;           % 1 = appliquer le masque, 0 = ignorer le masque
@@ -30,6 +30,8 @@ function [n, airy, div, D, nb_arms, arms_width, arms_width_lyot, nb_Mirrors, Dia
   if i == 0
      mask = 0;
   end
+  
+  div = 128 / (i+1)
             
             
 endfunction

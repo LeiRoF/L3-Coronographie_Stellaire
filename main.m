@@ -37,7 +37,7 @@ for simu=0:n
   % __________________________________________________  
   % Configuration de la simulation
   
-  [n, airy, div, D, nb_arms, armos_width, arms_width_lyot, nb_Mirrors, Diametre, Gap, Op, Ol, l, mask] = config(simu);
+  [n, airy, div, D, nb_arms, arms_width, arms_width_lyot, nb_Mirrors, Diametre, Gap, Op, Ol, l, mask] = config(simu);
   
   % __________________________________________________  
   % Modification des paramètres

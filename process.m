@@ -1,11 +1,11 @@
 function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, nb_Mirrors, Radius, Gap, nb_arms, arms_width, arms_width_lyot, Progress)
   
-  name = sprintf('D=%d, Div=%d, l=%.2f, Op=%.2f, Ol=%.2f', D, div, l, Op, Ol);
+  name = sprintf('D=%.2f, Div=%d, l=%.2f, Op=%.2f, Ol=%.2f', D, div, l, Op, Ol);
   
   % __________________________________________________  
   % Génération ou récupération du mirroir segmenté
   
-  fname = sprintf('0-Mirror Div = %d px.um-1, Segments = %d, Radius= %.2f um, Gap = %.2f um.fits', div, nb_Mirrors, Radius, Gap);
+  fname = sprintf('0-Mirror Div = %.2f px.um-1, Segments = %d, Radius= %.2f um, Gap = %.2f um.fits', div, nb_Mirrors, Radius, Gap);
   if isfile(fname)
     waitbar(0.0, Progress, 'Recuperation of existing mirror');
     [pup,hdr] = readfits(fname);
@@ -14,72 +14,31 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, nb_Mir
     Grid = BuildGrid(Radius, sqrt(3.)*Radius/2., Gap, nb_Mirrors, Progress);
     BasisSegmentsCube = BuildApodizedSegment(Grid, Radius, sqrt(3.)*Radius/2., nb_Mirrors,Progress); % segments
     pup = BuildApodizedPupil(Radius, sqrt(3.)*Radius/2., nb_Mirrors, Grid, BasisSegmentsCube, Gap,Progress); % pupil wo aberrations
-    
+    writefits(fname,pup);
   end
   
   % __________________________________________________ 
   % Rendre la matrice du miroir carrée
   
-  [N1,N2]=size(pup);
-  
-  if(N1 > N2 )
-    diff = ceil((N1-N2)/2);
+  N
+  [sx, sy] = size(pup)
+  if sx < N && sy < N
+    pup_tmp = zeros(N);
     
-    pup=[pup zeros(N1,diff)]; % Ajout lignes
-    if(mod(N1-N2,2)==0)
-      pup=[zeros(N1,diff) pup];
-    else
-      pup=[zeros(N1,diff-1) pup];
-    end
-  end
-  
-  [N1,N2]=size(pup);
-  
-  if(N2 > N1)
-    diff = ceil((N2-N1)/2);
+    %pup_tmp(N/2+1-floor(sx/2) : N/2+floor(sx/2)+1 , N/2+1-floor(sy/2) : N/2+floor(sy/2)+1) = pup;
+    ox = floor(N/2-sx/2)
+    oy = floor(N/2-sy/2)
+    pup_tmp(ox : ox+sx-1 , oy : oy+sy-1) = pup;
     
-    pup=[pup ; zeros(diff, N2)]; % Ajout colonnes
-    if(mod(N1-N2,2)==0)
-      pup=[zeros(diff, N2) ; pup];
-    else 
-      pup=[zeros(diff-1, N2) ; pup];
-    end
   end
-  
-  writefits(fname,pup);
-  
-  [N1,N2]=size(pup);
-  
-  % __________________________________________________ 
-  % Aggrandir la matrice pour avoir le bon nombre de pixel sur la tache d'airy
-  
-  for(i=1:N-N1)     % Ajout lignes
-    waitbar(i/(N-N1), Progress, 'Resize matrix on X');
-    if(mod(i,2)==0)
-      pup=[pup zeros(N1,1)];
-    else
-      pup=[zeros(N1,1) pup];
-    end
-  end
- 
-  [N1,N2]=size(pup);
-  for(i=1:N-N1)     % Ajout colonnes
-    waitbar(i/(N-N1), Progress, 'Resize matrix on Y');
-    if(mod(i,2)==0)
-      pup=[pup ; zeros(1,N2)];
-    else
-      pup=[zeros(1,N2) ; pup];
-    end
-  end
-  [N1,N2]=size(pup);
-  
-  pup = pup .* mkspider(N, nb_arms, arms_width);
+  clear pup;
+  pup = pup_tmp;
   
   % __________________________________________________ 
   % Création de la pupille
   
   waitbar(0.1, Progress, 'Génération de la pupille');
-  p = mkpup(N ,D ,Op);
+  p = mkpup(N ,D ,Op) .* mkspider(N, nb_arms, arms_width);
   
   % __________________________________________________ 
   % Application de la pupille au miroir
