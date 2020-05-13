@@ -25,10 +25,17 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, nb_Mir
   if sx < N && sy < N
     pup_tmp = zeros(N);
     
-    %pup_tmp(N/2+1-floor(sx/2) : N/2+floor(sx/2)+1 , N/2+1-floor(sy/2) : N/2+floor(sy/2)+1) = pup;
-    ox = floor(N/2-sx/2)
-    oy = floor(N/2-sy/2)
-    pup_tmp(ox : ox+sx-1 , oy : oy+sy-1) = pup;
+    pup_tmp(N/2+1-floor(sx/2) : N/2+floor(sx/2)+1 , N/2+1-floor(sy/2) : N/2+floor(sy/2)+1) = pup;
+    %ox = ceil(N/2-sx/2)
+    %oy = ceil(N/2-sy/2)
+    
+    %w = zeros(sx+2,sy+2);
+    %w(:,:) = 1;
+    %writefits('Test0.fits',w);
+    %pup_tmp(ox-1 : ox+sx , oy-1 : oy+sy) = w;
+    %writefits('Test1.fits',pup_tmp);
+    %pup_tmp(ox : ox+sx-1 , oy : oy+sy-1) = pup;
+    writefits('Test2.fits',pup_tmp);
     
   end
   clear pup;
