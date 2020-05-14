@@ -1,11 +1,14 @@
 function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, nb_Mirrors, Radius, Gap, nb_arms, arms_width, arms_width_lyot, Progress)
   
-  name = sprintf('D=%.2f, Div=%d, l=%.2f, Op=%.2f, Ol=%.2f', D, div, l, Op, Ol);
+  name = sprintf('Resolution = %um.px-1, Airy=%dpx, Op=%.2f, Aw=%.2fum, An=%d, l = %.2f, Ol=%.2f, Awl=%.2f, Mask=%d', div, res, Op/100, arms_width, nb_arms, l/100, Ol/100, arms_width_lyot, mask);
+  path = sprintf('./simu/%s/', name);
+  mkdir('simu');
+  mkdir('simu', name);
   
   % __________________________________________________  
   % Génération ou récupération du mirroir segmenté
   
-  fname = sprintf('0-Mirror Div = %.2f px.um-1, Segments = %d, Radius= %.2f um, Gap = %.2f um.fits', div, nb_Mirrors, Radius, Gap);
+  fname = sprintf('./simu/0-Mirror Div = %.2f px.um-1, Segments = %d, Radius= %.2f um, Gap = %.2f um.fits', div, nb_Mirrors, Radius, Gap);
   if isfile(fname)
     waitbar(0.0, Progress, 'Recuperation of existing mirror');
     [pup,hdr] = readfits(fname);
@@ -46,22 +49,26 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, nb_Mir
   
   p = pup .* p;
   waitbar(0.2, Progress, 'Application de la pupille');
-  writefits(sprintf('1-Pupille %s.fits', name),p);
+  
+  
+  
+  
+  writefits(sprintf('%s1-Pupille.fits', path),p);
   
   % __________________________________________________ 
   % Création du masque
   
   waitbar(0.3, Progress, 'Génération du masque');
   M = FQPM(N, N/2, N/2);
-  writefits("2-Masque.fits", M);
+  writefits(sprintf('%s2-Masque.fits', path), M);
   
   % __________________________________________________ 
   % Pupille: TF -> PSF
   
   waitbar(0.4, Progress, 'TF 1');
   A = Shift_im2(p, N);
-  writefits(sprintf('3a-TFPupille %s.fits', name),A);
-  writefits(sprintf('3b-TFPupille %s.fits', name),abs(A).^2);
+  writefits(sprintf('%s3a-TFPupille.fits', path),A);
+  writefits(sprintf('%s3b-TFPupille.fits', path),abs(A).^2);
   a = A;
   % A: avec masque      a: sans masque
   
@@ -71,8 +78,8 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, nb_Mir
   waitbar(0.5, Progress, 'Application du masque');
   if mask == 1;
   A = A .* M;
-  writefits(sprintf('4a-TFMasque %s.fits', name), A);
-  writefits(sprintf('4b-TFMasque %s.fits', name), abs(A).^2);
+  writefits(sprintf('%s4a-TFMasque.fits', path), A);
+  writefits(sprintf('%s4b-TFMasque.fits', path), abs(A).^2);
   end;
 
   % __________________________________________________ 
@@ -80,8 +87,8 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, nb_Mir
   
   waitbar(0.6, Progress, 'TF 2');
   A = fftshift(ifft2(fftshift(A)));
-  writefits(sprintf('5a-TFMasque2 %s.fits', name), A);
-  writefits(sprintf('5b-TFMasque2 %s.fits', name), abs(A).^2);
+  writefits(sprintf('%s5a-TFMasque2.fits', path), A);
+  writefits(sprintf('%s5b-TFMasque2.fits', path), abs(A).^2);
   
   % __________________________________________________ 
   % Création du Lyot
@@ -89,23 +96,23 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, nb_Mir
   waitbar(0.7, Progress, 'Génération du Lyot Stop');
   L = mkpup(N, D*l, Ol);
   L = L .* mkspider(N, nb_arms, arms_width_lyot);
-  writefits(sprintf("6-Lyot %s.fits", name),L);
+  writefits(sprintf("%s6-Lyot.fits", path),L);
   
   % __________________________________________________ 
   % Application du Lyot
   
   waitbar(0.8, Progress, 'Application du Lyot Stop');
   A = A .* L;
-  writefits(sprintf('7a-ApplicationLyot %s.fits', name),A);
-  writefits(sprintf('7b-ApplicationLyot %s.fits', name),abs(A).^2);
+  writefits(sprintf('%s7a-ApplicationLyot.fits', path),A);
+  writefits(sprintf('%s7b-ApplicationLyot.fits', path),abs(A).^2);
 
   % __________________________________________________ 
   % TF -> PSF Coronographique
   
   waitbar(0.9, Progress, 'TF 3');
   A = fftshift(fft2(fftshift(A)));
-  writefits(sprintf('8a-TFLyot %s.fits', name),A);
-  writefits(sprintf('8b-TFLyot %s.fits', name),abs(A).^2);
+  writefits(sprintf('%s8a-TFLyot.fits', path),A);
+  writefits(sprintf('%s8b-TFLyot.fits', path),abs(A).^2);
   
   % __________________________________________________ 
   % Profil radial PSF
