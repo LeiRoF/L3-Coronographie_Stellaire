@@ -8,7 +8,7 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, nb_Mir
   % __________________________________________________  
   % Génération ou récupération du mirroir segmenté
   
-  fname = sprintf('./simu/0-Mirror Div = %.2f px.um-1, Segments = %d, Radius= %.2f um, Gap = %.2f um.fits', div, nb_Mirrors, Radius, Gap);
+  fname = sprintf('./simu/Mirror Div = %.2f px.um-1, Segments = %d, Radius= %.2f um, Gap = %.2f um.fits', div, nb_Mirrors, Radius, Gap);
   if isfile(fname)
     waitbar(0.0, Progress, 'Recuperation of existing mirror');
     [pup,hdr] = readfits(fname);

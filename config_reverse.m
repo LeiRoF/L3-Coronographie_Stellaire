@@ -1,6 +1,6 @@
 function [n, fname] = config_reverse(i)
   
-  n              = 0;            % Nombre de simulations à faire tourner
+  n              = 1;            % Nombre de simulations à faire tourner
                                  % Le paramètre i va de 0 à n
   
   % __________________________________________________ 

@@ -47,7 +47,7 @@ end
   
   % __________________________________________________ 
   % End
-  close("all");
+  close(Progress);
   close(ParentProgress);
   
 endfunction
