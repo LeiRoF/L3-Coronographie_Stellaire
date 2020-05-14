@@ -43,7 +43,7 @@ for simu=0:n
   % Modification des paramètres
   
   arms_width = ceil(arms_width/div);
-  arms_width_lyot = ceil(arms_width*arms_width_lyot/100);
+  arms_width_lyot = ceil(arms_width*arms_width_lyot);
   D = D/div;
   N = ceil(D)*airy;
   
