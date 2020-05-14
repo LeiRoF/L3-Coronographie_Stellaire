@@ -26,16 +26,10 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, nb_Mir
     pup_tmp = zeros(N);
     
     %pup_tmp(N/2+1-floor(sx/2) : N/2+floor(sx/2)+1 , N/2+1-floor(sy/2) : N/2+floor(sy/2)+1) = pup;
-    ox = ceil(N/2-sx/2)
-    oy = ceil(N/2-sy/2)
+    ox = floor(N/2+1)-floor(sx/2)
+    oy = floor(N/2+1)-floor(sy/2)
     
-    w = zeros(sx+2,sy+2);
-    w(:,:) = 1;
-    %writefits('Test0.fits',w);
-    %pup_tmp(ox-1 : ox+sx , oy-1 : oy+sy) = w;
-    %writefits('Test1.fits',pup_tmp);
-    pup_tmp(ox+2 : ox+sx+1 , oy+2 : oy+sy+1) = pup;
-    %writefits('Test2.fits',pup_tmp);
+    pup_tmp(ox : ox+sx-1 , oy : oy+sy-1) = pup;
     
   end
   clear pup;
@@ -125,13 +119,13 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, nb_Mir
   % Plots
   
   if mod(i,3) == 0;
-  semilogy((R(1:res*12)*N/2)/res,Zr(1:res*12),'--','DisplayName',name);hold on;
+  figure(1);semilogy((R(1:res*12)*N/2)/res,Zr(1:res*12),'--','DisplayName',name);hold on;
   end;
   if mod(i,3) == 1;
-  semilogy((R(1:res*12)*N/2)/res,Zr(1:res*12),':','DisplayName',name);hold on;
+  figure(1);semilogy((R(1:res*12)*N/2)/res,Zr(1:res*12),':','DisplayName',name);hold on;
   end;
   if mod(i,3) == 2;
-  semilogy((R(1:res*12)*N/2)/res,Zr(1:res*12),'-.','DisplayName',name);hold on;
+  figure(1);semilogy((R(1:res*12)*N/2)/res,Zr(1:res*12),'-.','DisplayName',name);hold on;
   end;
 
   % __________________________________________________ 
