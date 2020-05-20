@@ -12,8 +12,12 @@ pos_w1=get(ParentProgress,'position');
 pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
 set(Progress,'position',pos_w2,'doublebuffer','on')
     
-       
-for i=1:length(reseau)
+if N == 0
+  only_on_segment = 1;
+else
+  only_on_segment = 0;
+endif
+for i=1:length(reseau)- only_on_segment
     waitbar(i/length(reseau), Progress, 'BuildApodizedPupil');
     
     L_x=floor(reseau(i,2)-ceil(r)-1:reseau(i,2)+ceil(r));

@@ -50,7 +50,7 @@
 
 function[Grid]=BuildGrid(R,Rb,Gap,N,ParentProgress)
 
-Progress = waitbar(0.0, 'BuildGrid X');
+    Progress = waitbar(0.0, 'BuildGrid X');
     pos_w1=get(ParentProgress,'position');
     pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
     set(Progress,'position',pos_w2,'doublebuffer','on')

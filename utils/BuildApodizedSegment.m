@@ -24,7 +24,16 @@ Progress3 = waitbar(0.0, 'BuildApodizedSegment 3');
     pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
     set(Progress3,'position',pos_w2,'doublebuffer','on')
 
-for s=1:length(GridVector)
+    
+if N == 0;
+  only_on_segment = 1;
+else
+  only_on_segment = 0;
+endif
+    
+for s=1:length(GridVector)-only_on_segment
+  
+    s
     
     CenterX=GridVector(s,1);
     CenterY=GridVector(s,2);

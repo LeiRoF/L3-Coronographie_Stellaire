@@ -1,9 +1,42 @@
-function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, pupil, lyot, nb_Mirrors, Radius, Gap, nb_arms, arms_width, arms_width_lyot, Progress)
+function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, pupil, lyot, nb_Mirrors, Radius, Gap, nb_arms, arms_width, arms_width_lyot, spider_origin, hide_center_mirors, Progress)
   
   name = sprintf('Resolution = %um.px-1, Airy=%dpx, Op=%.2f, Aw=%.2fum, An=%d, l = %.2f, Ol=%.2f, Awl=%.2f, Mask=%d', div, res, Op/100, arms_width, nb_arms, l/100, Ol/100, arms_width_lyot, mask);
   path = sprintf('./simu/%s/', name);
   mkdir('simu');
   mkdir('simu', name);
+  
+  
+  
+  
+  
+
+  if hide_center_mirors >= 0
+    Grid = BuildGrid(Radius, sqrt(3.)*Radius/2., Gap, hide_center_mirors, Progress);
+    BasisSegmentsCube = BuildApodizedSegment(Grid, Radius, sqrt(3.)*Radius/2., hide_center_mirors, Progress); % segments
+    obst = BuildApodizedPupil(Radius, sqrt(3.)*Radius/2., hide_center_mirors, Grid, BasisSegmentsCube, Gap, Progress); % pupil wo aberrations
+    
+    [sx, sy] = size(obst)
+    if sx < N && sy < N
+      obst_tmp = zeros(N);
+    
+      ox = floor(N/2+1)-floor(sx/2)
+      oy = floor(N/2+1)-floor(sy/2)
+      
+      obst_tmp(ox : ox+sx-1 , oy : oy+sy-1) = obst;
+    end
+    clear obst;
+    obst = obst_tmp;
+    obst = obst .* -1;
+    obst = obst .+ 1;
+    obst = imrotate(obst, 90, 'bilinear', 'crop');
+  endif
+  
+  
+  
+  
+  
+  
+  
   
   % __________________________________________________  
   % Génération ou récupération du mirroir segmenté
@@ -38,6 +71,10 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, pupil,
   clear pup;
   p = pup_tmp;
   p = imrotate(p, 90, 'bilinear', 'crop');
+
+  if hide_center_mirors >= 0
+    p = p .* obst;  
+  endif
   
   % __________________________________________________ 
   % Création de la pupille
@@ -46,7 +83,7 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, pupil,
     waitbar(0.1, Progress, 'Génération de la pupille');
     p = p .* mkpup(N ,D ,Op);
   end
-  p = p .* mkspider(N, nb_arms, arms_width);
+  p = p .* mkspider(N, nb_arms, arms_width, spider_origin);
   
   writefits(sprintf('%s1-Pupille.fits', path),p);
   
@@ -91,7 +128,7 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, pupil,
   if lyot == 1;
     waitbar(0.7, Progress, 'Génération du Lyot Stop');
     L = mkpup(N, D*l, Ol);
-    L = L .* mkspider(N, nb_arms, arms_width_lyot);
+    L = L .* mkspider(N, nb_arms, arms_width_lyot, spider_origin);
     writefits(sprintf("%s6-Lyot.fits", path),L);
   
   % __________________________________________________ 

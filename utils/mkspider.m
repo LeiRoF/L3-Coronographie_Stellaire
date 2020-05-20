@@ -1,4 +1,4 @@
-function res = mkspider(dim, nb_arms, width)
+function res = mkspider(dim, nb_arms, width, spider_origin)
 
 
 % Création de la matrice
@@ -28,7 +28,7 @@ if nb_arms > 0;
     mat(dim/2+1-floor(width/2):dim/2+floor(width/2),floor(dim/2):dim) = 0;
     
     % Rotation de la matrice
-    mat = imrotate(mat, angle * (i-1) - 90, 'bilinear', 'crop');
+    mat = imrotate(mat, angle * (i-1) - 90 + spider_origin, 'bilinear', 'crop');
 
     % Ajout du bras dans la matrice principale
     res = res .* mat;
