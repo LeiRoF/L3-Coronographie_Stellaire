@@ -1,9 +1,20 @@
-function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, pupil, lyot, nb_Mirrors, Radius, Gap, nb_arms, arms_width, arms_width_lyot, spider_origin, hide_center_mirors, Progress)
+function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, pupil, lyot, based_on_pupil, nb_Mirrors, Radius, Gap, nb_arms, arms_width, arms_width_lyot, spider_origin, hide_center_mirors, Progress)
   
   name = sprintf('Resolution = %um.px-1, Airy=%dpx, Op=%.2f, Aw=%.2fum, An=%d, l = %.2f, Ol=%.2f, Awl=%.2f, Mask=%d', div, res, Op/100, arms_width, nb_arms, l/100, Ol/100, arms_width_lyot, mask);
-  path = sprintf('./simu/%s/', name);
-  mkdir('simu');
-  mkdir('simu', name);
+  mirror_name = sprintf('Mirror Div = %.2f px.um-1, Segments = %d, Radius= %.2f um, Gap = %.2f um.fits', div, nb_Mirrors, Radius, Gap);
+  
+  if 1
+    simu_folder = "simu";
+    mkdir(simu_folder);
+    mkdir(simu_folder, name);
+    simu_path = sprintf('./%s/', simu_folder);
+    path = sprintf('./%s/%s/', simu_folder, name);
+    mirror_path = sprintf('./%s/%s', simu_folder, mirror_name);
+  else
+    path = '';
+    mirror_path = '0-Mirror.fits';
+  endif
+  
   
   
   
@@ -42,15 +53,15 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, pupil,
   % Génération ou récupération du mirroir segmenté
   
   fname = sprintf('./simu/Mirror Div = %.2f px.um-1, Segments = %d, Radius= %.2f um, Gap = %.2f um.fits', div, nb_Mirrors, Radius, Gap);
-  if isfile(fname)
+  if isfile(mirror_path)
     waitbar(0.0, Progress, 'Recuperation of existing mirror');
-    [pup,hdr] = readfits(fname);
+    [pup,hdr] = readfits(mirror_path);
   else
     waitbar(0.0, Progress, 'Generating mirror');
     Grid = BuildGrid(Radius, sqrt(3.)*Radius/2., Gap, nb_Mirrors, Progress);
     BasisSegmentsCube = BuildApodizedSegment(Grid, Radius, sqrt(3.)*Radius/2., nb_Mirrors,Progress); % segments
     pup = BuildApodizedPupil(Radius, sqrt(3.)*Radius/2., nb_Mirrors, Grid, BasisSegmentsCube, Gap,Progress); % pupil wo aberrations
-    writefits(fname,pup);
+    writefits(mirror_path,pup);
   end
   
   % __________________________________________________ 
@@ -79,7 +90,7 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, pupil,
   % __________________________________________________ 
   % Création de la pupille
   
-  if pupil == 1;
+  if pupil != 0;
     waitbar(0.1, Progress, 'Génération de la pupille');
     p = p .* mkpup(N ,D ,Op);
   end
@@ -127,7 +138,13 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, pupil,
   
   if lyot == 1;
     waitbar(0.7, Progress, 'Génération du Lyot Stop');
-    L = mkpup(N, D*l, Ol);
+    if based_on_pupil == 0;
+      if pupil != 0
+        L = mkpup(N, D*l, Ol);
+      endif
+    else
+       L = p;
+    endif
     L = L .* mkspider(N, nb_arms, arms_width_lyot, spider_origin);
     writefits(sprintf("%s6-Lyot.fits", path),L);
   
