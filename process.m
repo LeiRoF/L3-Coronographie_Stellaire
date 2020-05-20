@@ -1,4 +1,4 @@
-function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, nb_Mirrors, Radius, Gap, nb_arms, arms_width, arms_width_lyot, Progress)
+function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, pupil, lyot, nb_Mirrors, Radius, Gap, nb_arms, arms_width, arms_width_lyot, Progress)
   
   name = sprintf('Resolution = %um.px-1, Airy=%dpx, Op=%.2f, Aw=%.2fum, An=%d, l = %.2f, Ol=%.2f, Awl=%.2f, Mask=%d', div, res, Op/100, arms_width, nb_arms, l/100, Ol/100, arms_width_lyot, mask);
   path = sprintf('./simu/%s/', name);
@@ -36,31 +36,19 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, nb_Mir
     
   end
   clear pup;
-  pup = pup_tmp;
+  p = pup_tmp;
+  p = imrotate(p, 90, 'bilinear', 'crop');
   
   % __________________________________________________ 
   % Création de la pupille
   
-  waitbar(0.1, Progress, 'Génération de la pupille');
-  p = mkpup(N ,D ,Op) .* mkspider(N, nb_arms, arms_width);
-  
-  % __________________________________________________ 
-  % Application de la pupille au miroir
-  
-  p = pup .* p;
-  waitbar(0.2, Progress, 'Application de la pupille');
-  
-  
-  
+  if pupil == 1;
+    waitbar(0.1, Progress, 'Génération de la pupille');
+    p = p .* mkpup(N ,D ,Op);
+  end
+  p = p .* mkspider(N, nb_arms, arms_width);
   
   writefits(sprintf('%s1-Pupille.fits', path),p);
-  
-  % __________________________________________________ 
-  % Création du masque
-  
-  waitbar(0.3, Progress, 'Génération du masque');
-  M = FQPM(N, N/2, N/2);
-  writefits(sprintf('%s2-Masque.fits', path), M);
   
   % __________________________________________________ 
   % Pupille: TF -> PSF
@@ -73,13 +61,20 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, nb_Mir
   % A: avec masque      a: sans masque
   
   % __________________________________________________ 
+  % Création du masque
+  
+  if mask == 1;
+    waitbar(0.3, Progress, 'Génération du masque');
+    M = FQPM(N, N/2, N/2);
+    writefits(sprintf('%s2-Masque.fits', path), M);
+  
+  % __________________________________________________ 
   % Application du masque
   
-  waitbar(0.5, Progress, 'Application du masque');
-  if mask == 1;
-  A = A .* M;
-  writefits(sprintf('%s4a-TFMasque.fits', path), A);
-  writefits(sprintf('%s4b-TFMasque.fits', path), abs(A).^2);
+    waitbar(0.5, Progress, 'Application du masque');
+    A = A .* M;
+    writefits(sprintf('%s4a-TFMasque.fits', path), A);
+    writefits(sprintf('%s4b-TFMasque.fits', path), abs(A).^2);
   end;
 
   % __________________________________________________ 
@@ -93,18 +88,20 @@ function [Zr, R] = process(N, D, div, Op, Ol, yc, xc, m, res, l, i, mask, nb_Mir
   % __________________________________________________ 
   % Création du Lyot
   
-  waitbar(0.7, Progress, 'Génération du Lyot Stop');
-  L = mkpup(N, D*l, Ol);
-  L = L .* mkspider(N, nb_arms, arms_width_lyot);
-  writefits(sprintf("%s6-Lyot.fits", path),L);
+  if lyot == 1;
+    waitbar(0.7, Progress, 'Génération du Lyot Stop');
+    L = mkpup(N, D*l, Ol);
+    L = L .* mkspider(N, nb_arms, arms_width_lyot);
+    writefits(sprintf("%s6-Lyot.fits", path),L);
   
   % __________________________________________________ 
   % Application du Lyot
   
-  waitbar(0.8, Progress, 'Application du Lyot Stop');
-  A = A .* L;
-  writefits(sprintf('%s7a-ApplicationLyot.fits', path),A);
-  writefits(sprintf('%s7b-ApplicationLyot.fits', path),abs(A).^2);
+    waitbar(0.8, Progress, 'Application du Lyot Stop');
+    A = A .* L;
+    writefits(sprintf('%s7a-ApplicationLyot.fits', path),A);
+    writefits(sprintf('%s7b-ApplicationLyot.fits', path),abs(A).^2);
+  end
 
   % __________________________________________________ 
   % TF -> PSF Coronographique
