@@ -7,7 +7,7 @@ function [n, airy, div, D, nb_arms, arms_width, arms_width_lyot, nb_Mirrors, Dia
   % Paramètres par défaut
   
   airy               = 4;           % Résolution (nombre de pixels de définition de la tache d'Airy)
-  div                = 32;          % Résolution en micromètre/pixel
+  div                = 16;          % Résolution en micromètre/pixel
   D                  = 7.7*1000;    % Diamètre de la pupille en micromètre
 
   nb_arms            = 6;           % Nombre de bras pour l'araignée
@@ -37,7 +37,6 @@ function [n, airy, div, D, nb_arms, arms_width, arms_width_lyot, nb_Mirrors, Dia
     nb_arms=3;
     Op=0;
     Ol=0;
-    lyot=0;
     pupil=0;
     nb_Mirrors = 2;
             
