@@ -37,7 +37,7 @@
 %               |                           L. De Vinci |
 %               |_______________________________________|  
 %
-%                      Réseau hexagonal de Vitruve      
+%                      Rï¿½seau hexagonal de Vitruve      
 %
 
 
@@ -48,7 +48,7 @@
 
 
 
-function[Grid]=BuildGrid(R,Rb,Gap,N,ParentProgress)
+function[Grid]=BuildGrid(R,Rb,mirrors_gap,N,ParentProgress)
 
     Progress = waitbar(0.0, 'BuildGrid X');
     pos_w1=get(ParentProgress,'position');
@@ -60,30 +60,30 @@ Progress2 = waitbar(0.0, 'BuildGrid Y');
         pos_w2=[pos_w1(1) pos_w1(2)+pos_w1(4) pos_w1(3) pos_w1(4)];
         set(Progress2,'position',pos_w2,'doublebuffer','on')
 
-%DÉFINITION D'UN COMPTEUR D'OCCURENCE
+%Dï¿½FINITION D'UN COMPTEUR D'OCCURENCE
 compteur=1;
 
-%DÉFINITION DE LA LONGEUR ET DE LA LARGUEUR DE LA PUPILLE
-X=((3*N+2)*R+N*sqrt(3)*Gap);
-Y=((4*N+2)*Rb+2*N*Gap)+R;
+%Dï¿½FINITION DE LA LONGEUR ET DE LA LARGUEUR DE LA PUPILLE
+X=((3*N+2)*R+N*sqrt(3)*mirrors_gap);
+Y=((4*N+2)*Rb+2*N*mirrors_gap)+R;
 
-%DÉFINITION DE LA PENTE DES BORDS DU RÉSEAU NÉCESSAIRE POUR CONTRAINDRE LES
-%SEGMENT À LA FORME HEXAGONALE DE LA PUPILLE
-pente=(2*Rb+Gap)/(3*R+sqrt(3)*Gap);
+%Dï¿½FINITION DE LA PENTE DES BORDS DU Rï¿½SEAU Nï¿½CESSAIRE POUR CONTRAINDRE LES
+%SEGMENT ï¿½ LA FORME HEXAGONALE DE LA PUPILLE
+pente=(2*Rb+mirrors_gap)/(3*R+sqrt(3)*mirrors_gap);
 
 %INITIALISATION DU VECTEUR CONTENANT LES POSITIONS DES CENTRES
 Grid=zeros(3*N*(N+1)+1, 2);
 
-%DÉFINITION DU PAS VERTICAL ET HORIZONTAL DU RÉSEAU
-grid_X=3*R+sqrt(3)*Gap;
-grid_Y=2*Rb+Gap;
+%Dï¿½FINITION DU PAS VERTICAL ET HORIZONTAL DU Rï¿½SEAU
+grid_X=3*R+sqrt(3)*mirrors_gap;
+grid_Y=2*Rb+mirrors_gap;
 
-%CONDITION SUR N NÉCESSAIRE POUR AVOIR LE BON FORMAT
+%CONDITION SUR N Nï¿½CESSAIRE POUR AVOIR LE BON FORMAT
 if(mod(N,2)==0)
     disp("\b");
 
     
-    %CRÉATION DU RÉSEAU PRINCIPAL
+    %CRï¿½ATION DU Rï¿½SEAU PRINCIPAL
     waitbar(0.0, Progress, 'BuildGrid X');
 
     for i=0:grid_X:X
@@ -94,14 +94,14 @@ if(mod(N,2)==0)
         for j=0:grid_Y:Y
             waitbar(j/Y, Progress2, 'BuildGrid Y');
             
-            %DÉFINITION DES ÉQUATION DES CÔTÉS DE L'HEXAGONE PUPILLAIRE
-            A=(4*Rb+2*Gap)*N/4 - pente*i;
+            %Dï¿½FINITION DES ï¿½QUATION DES Cï¿½Tï¿½S DE L'HEXAGONE PUPILLAIRE
+            A=(4*Rb+2*mirrors_gap)*N/4 - pente*i;
             B=-A;
-            C=A+(4*N+2)*Rb+2*N*Gap+R*sqrt(3)/3;
-            D=B+(4*N+2)*Rb+2*N*Gap+R*sqrt(3)/3;
+            C=A+(4*N+2)*Rb+2*N*mirrors_gap+R*sqrt(3)/3;
+            D=B+(4*N+2)*Rb+2*N*mirrors_gap+R*sqrt(3)/3;
 
-            %CRÉATION DE BOOLÉEN TESTANT L'APPARTENANCE OU NON DES POINTS
-            %AU RÉSEAU
+            %CRï¿½ATION DE BOOLï¿½EN TESTANT L'APPARTENANCE OU NON DES POINTS
+            %AU Rï¿½SEAU
             bool_1=(j>=A+1);
             bool_2=(j>=B+1);
             bool_3=(j<=C);
@@ -109,12 +109,12 @@ if(mod(N,2)==0)
 
             if(bool_1&&bool_2&&bool_3&&bool_4&&i<=X-grid_X/2)
 
-                %REMPLISSAGE DE VECTEUR RÉSEAU AVEC LES COORDONNÉES (PLUS
-                %DÉCALLAGE POUR PRENDRE COMPTE DE LA DISTANCE AUX BORDS)
+                %REMPLISSAGE DE VECTEUR Rï¿½SEAU AVEC LES COORDONNï¿½ES (PLUS
+                %Dï¿½CALLAGE POUR PRENDRE COMPTE DE LA DISTANCE AUX BORDS)
                 Grid(compteur,1)=i+3*R;
                 Grid(compteur,2)=j+R;
 
-                %INCRÉMENTATION DU COMPTEUR
+                %INCRï¿½MENTATION DU COMPTEUR
                 compteur=compteur+1;
 
             end
@@ -125,7 +125,7 @@ if(mod(N,2)==0)
   
   
        
-    %CRÉATION DU RÉSEAU SECONDAIRE (ENTRE LES MAILLES DU PRINCIPAL)
+    %CRï¿½ATION DU Rï¿½SEAU SECONDAIRE (ENTRE LES MAILLES DU PRINCIPAL)
     waitbar(0.0, Progress, 'BuildGrid2 X');
     
     for i=grid_X/2:grid_X:X
@@ -137,14 +137,14 @@ if(mod(N,2)==0)
         for j=grid_Y/2:grid_Y:Y
             waitbar(j/Y, Progress, 'BuildGrid2 Y');
 
-            %DÉFINITION DES ÉQUATION DES CÔTÉS DE L'HEXAGONE PUPILLAIRE
-            A=(4*Rb+2*Gap)*N/4- pente*i;
+            %Dï¿½FINITION DES ï¿½QUATION DES Cï¿½Tï¿½S DE L'HEXAGONE PUPILLAIRE
+            A=(4*Rb+2*mirrors_gap)*N/4- pente*i;
             B=-A;
-            C=A+(4*N+2)*Rb+2*N*Gap+R*sqrt(3)/3;
-            D=B+(4*N+2)*Rb+2*N*Gap+R*sqrt(3)/3;
+            C=A+(4*N+2)*Rb+2*N*mirrors_gap+R*sqrt(3)/3;
+            D=B+(4*N+2)*Rb+2*N*mirrors_gap+R*sqrt(3)/3;
 
-            %CRÉATION DE BOOLÉEN TESTANT L'APPARTENANCE OU NON DES POINTS
-            %AU RÉSEAU
+            %CRï¿½ATION DE BOOLï¿½EN TESTANT L'APPARTENANCE OU NON DES POINTS
+            %AU Rï¿½SEAU
             bool_1=(j>=A+1);
             bool_2=(j>=B+1);
             bool_3=(j<=C);
@@ -152,12 +152,12 @@ if(mod(N,2)==0)
 
             if(bool_1&&bool_2&&bool_3&&bool_4&&i<=X-grid_X/2)
 
-                %REMPLISSAGE DE VECTEUR RÉSEAU AVEC LES COORDONNÉES (PLUS
-                %DÉCALLAGE POUR PRENDRE COMPTE DE LA DISTANCE AUX BORDS)
+                %REMPLISSAGE DE VECTEUR Rï¿½SEAU AVEC LES COORDONNï¿½ES (PLUS
+                %Dï¿½CALLAGE POUR PRENDRE COMPTE DE LA DISTANCE AUX BORDS)
                 Grid(compteur,1)=i+3*R;
                 Grid(compteur,2)=j+R;
 
-                %INCRÉMENTATION DU COMPTEUR
+                %INCRï¿½MENTATION DU COMPTEUR
                 compteur=compteur+1;
 
             end
@@ -168,7 +168,7 @@ if(mod(N,2)==0)
 
 else
 
-    %CRÉATION DU RÉSEAU PRINCIPAL
+    %CRï¿½ATION DU Rï¿½SEAU PRINCIPAL
     waitbar(0.0, Progress, 'BuildGrid3 X');
     
     for i=0:grid_X:X
@@ -178,14 +178,14 @@ else
         for j=0:grid_Y:Y
             waitbar(j/Y, Progress, 'BuildGrid3 Y');
 
-            %DÉFINITION DES ÉQUATION DES CÔTÉS DE L'HEXAGONE PUPILLAIRE
-            A=(4*Rb+2*Gap)*N/4 - pente*i;
+            %Dï¿½FINITION DES ï¿½QUATION DES Cï¿½Tï¿½S DE L'HEXAGONE PUPILLAIRE
+            A=(4*Rb+2*mirrors_gap)*N/4 - pente*i;
             B=-A;
-            C=A+(4*N+2)*Rb+2*N*Gap+R*sqrt(3)/3;
-            D=B+(4*N+2)*Rb+2*N*Gap+R*sqrt(3)/3;
+            C=A+(4*N+2)*Rb+2*N*mirrors_gap+R*sqrt(3)/3;
+            D=B+(4*N+2)*Rb+2*N*mirrors_gap+R*sqrt(3)/3;
 
-            %CRÉATION DE BOOLÉEN TESTANT L'APPARTENANCE OU NON DES POINTS
-            %AU RÉSEAU
+            %CRï¿½ATION DE BOOLï¿½EN TESTANT L'APPARTENANCE OU NON DES POINTS
+            %AU Rï¿½SEAU
             bool_1=(j>=A);
             bool_2=(j>=B);
             bool_3=(j<=C);
@@ -193,12 +193,12 @@ else
 
             if(bool_1&&bool_2&&bool_3&&bool_4&&i<=X-grid_X/2)
 
-                %REMPLISSAGE DE VECTEUR RÉSEAU AVEC LES COORDONNÉES (PLUS
-                %DÉCALLAGE POUR PRENDRE COMPTE DE LA DISTANCE AUX BORDS)
+                %REMPLISSAGE DE VECTEUR Rï¿½SEAU AVEC LES COORDONNï¿½ES (PLUS
+                %Dï¿½CALLAGE POUR PRENDRE COMPTE DE LA DISTANCE AUX BORDS)
                 Grid(compteur,1)=i+3*R;
                 Grid(compteur,2)=j+2*R;
 
-                %INCRÉMENTATION DU COMPTEUR
+                %INCRï¿½MENTATION DU COMPTEUR
                 compteur=compteur+1;
 
             end
@@ -207,7 +207,7 @@ else
 
     end
 
-    %CRÉATION DU RÉSEAU SECONDAIRE (ENTRE LES MAILLES DU PRINCIPAL)
+    %CRï¿½ATION DU Rï¿½SEAU SECONDAIRE (ENTRE LES MAILLES DU PRINCIPAL)
     waitbar(0.0, Progress, 'BuildGrid4 X');
         
     for i=grid_X/2:grid_X:X
@@ -217,14 +217,14 @@ else
         for j=grid_Y/2:grid_Y:Y
             waitbar(j/Y, Progress, 'BuildGrid4 Y');
 
-            %DÉFINITION DES ÉQUATION DES CÔTÉS DE L'HEXAGONE PUPILLAIRE
-            A=(4*Rb+2*Gap)*N/4- pente*i;
+            %Dï¿½FINITION DES ï¿½QUATION DES Cï¿½Tï¿½S DE L'HEXAGONE PUPILLAIRE
+            A=(4*Rb+2*mirrors_gap)*N/4- pente*i;
             B=-A;
-            C=A+(4*N+2)*Rb+2*N*Gap+R*sqrt(3)/3;
-            D=B+(4*N+2)*Rb+2*N*Gap+R*sqrt(3)/3;
+            C=A+(4*N+2)*Rb+2*N*mirrors_gap+R*sqrt(3)/3;
+            D=B+(4*N+2)*Rb+2*N*mirrors_gap+R*sqrt(3)/3;
 
-            %CRÉATION DE BOOLÉEN TESTANT L'APPARTENANCE OU NON DES POINTS
-            %AU RÉSEAU
+            %CRï¿½ATION DE BOOLï¿½EN TESTANT L'APPARTENANCE OU NON DES POINTS
+            %AU Rï¿½SEAU
             bool_1=(j>=A);
             bool_2=(j>=B);
             bool_3=(j<=C);
@@ -232,12 +232,12 @@ else
 
             if(bool_1&&bool_2&&bool_3&&bool_4&&i<=X-grid_X/2)
 
-                %REMPLISSAGE DE VECTEUR RÉSEAU AVEC LES COORDONNÉES (PLUS
-                %DÉCALLAGE POUR PRENDRE COMPTE DE LA DISTANCE AUX BORDS)
+                %REMPLISSAGE DE VECTEUR Rï¿½SEAU AVEC LES COORDONNï¿½ES (PLUS
+                %Dï¿½CALLAGE POUR PRENDRE COMPTE DE LA DISTANCE AUX BORDS)
                 Grid(compteur,1)=i+3*R;
                 Grid(compteur,2)=j+2*R;
 
-                %INCRÉMENTATION DU COMPTEUR
+                %INCRï¿½MENTATION DU COMPTEUR
                 compteur=compteur+1;
 
             end

@@ -10,7 +10,7 @@ function process_reverse(fname, Progress)
   [A,hdr] = readfits(fname);
   
   
-  waitbar(0.1, Progress, 'Récupération de l amplitude complexe');
+  waitbar(0.1, Progress, 'Rï¿½cupï¿½ration delyotamplitude complexe');
 
 
   % TF -> PSF Coronographique
@@ -26,9 +26,9 @@ function process_reverse(fname, Progress)
   writefits(sprintf('%sReverse-2b-TFMasque2.fits',path), A);
   writefits(sprintf('%sReverse-2b-TFMasque2.fits',path), abs(A).^2);
     
-  % Création du masque
+  % Crï¿½ation du masque
   [N,N2]=size(A);
-  waitbar(0.6, Progress, 'Génération du masque');
+  waitbar(0.6, Progress, 'Gï¿½nï¿½ration du masque');
   M = FQPM(N, N/2, N/2);
   writefits(sprintf("%sReverse-3-Masque.fits",path), M);
   
